@@ -1,0 +1,49 @@
+def astar(graph, heuristic, start, goal):
+    open_list = [(start, 0)]
+    cost = {start: 0}
+    parent = {}
+
+    while open_list:
+        open_list.sort(key=lambda x: x[1])
+        node, _ = open_list.pop(0)
+
+        if node == goal:
+            path = []
+            while node in parent:
+                path.append(node)
+                node = parent[node]
+            path.append(start)
+            path.reverse()
+
+            print("Shortest Path:", path)
+            print("Total Cost:", cost[goal])
+            return
+
+        for neighbor, distance in graph[node]:
+            new_cost = cost[node] + distance
+
+            if neighbor not in cost or new_cost < cost[neighbor]:
+                cost[neighbor] = new_cost
+                priority = new_cost + heuristic[neighbor]
+                parent[neighbor] = node
+                open_list.append((neighbor, priority))
+
+    print("No path found")
+
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 3)],
+    'D': [('G', 5)],
+    'E': [('G', 2)],
+    'F': [('G', 2)],
+    'G': []
+}
+
+heuristic = {
+    'A': 7, 'B': 6, 'C': 4,
+    'D': 4, 'E': 2, 'F': 1, 'G': 0
+}
+
+astar(graph, heuristic, 'A', 'G')
