@@ -1,0 +1,44 @@
+def is_safe(region, color, colors, neighbors):
+    for neighbor in neighbors[region]:
+        if colors.get(neighbor) == color:
+            return False
+    return True
+
+
+def solve(regions, color_list, neighbors, colors):
+    if len(colors) == len(regions):
+        return True
+
+    region = next(r for r in regions if r not in colors)
+
+    for color in color_list:
+        if is_safe(region, color, colors, neighbors):
+            colors[region] = color
+
+            if solve(regions, color_list, neighbors, colors):
+                return True
+
+            del colors[region]
+
+    return False
+
+
+regions = ['A', 'B', 'C', 'D']
+
+color_list = ['Red', 'Green', 'Blue']
+
+neighbors = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D'],
+    'D': ['B', 'C']
+}
+
+colors = {}
+
+if solve(regions, color_list, neighbors, colors):
+    print("Map Coloring Solution:")
+    for region in regions:
+        print(region, ":", colors[region])
+else:
+    print("No solution exists")
